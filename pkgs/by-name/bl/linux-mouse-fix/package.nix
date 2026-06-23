@@ -1,22 +1,23 @@
 # package.nix
-{ lib
-, rustPlatform
-, fetchFromGitHub
-, pkg-config
-, udev
-, libevdev
+{
+  lib,
+  rustPlatform,
+  fetchFromGitHub,
+  pkg-config,
+  udev,
+  libevdev,
 }:
 
-rustPlatform.buildRustPackage rec {
-  pname = "bloody-mouse-fix";
+rustPlatform.buildRustPackage (finalAttrs: {
+  pname = "linux-mouse-fix";
   version = "1.1";
 
   src = fetchFromGitHub {
-  owner = "ItsBenyaamin";
-  repo = "linux_mouse_fix";
-  rev = "v${version}";
-  hash = "sha256-snz7y6mFXOUfu8mKaluLOm8pCKig8O+AF9cvIjHE0R0=";
-};
+    owner = "ItsBenyaamin";
+    repo = "linux_mouse_fix";
+    tag = "v${version}";
+    hash = "sha256-snz7y6mFXOUfu8mKaluLOm8pCKig8O+AF9cvIjHE0R0=";
+  };
 
   cargoLock = {
     lockFile = ./Cargo.lock;
@@ -33,13 +34,18 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = [ pkg-config ];
 
-  buildInputs = [ udev libevdev ];
+  buildInputs = [
+    udev
+    libevdev
+  ];
 
-  meta = with lib; {
+  meta = {
     description = "Fix automatically Linux mouse movement issue due to multi event file";
     homepage = "https://github.com/ItsBenyaamin/linux_mouse_fix";
-    license = licenses.mit;
+    license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ yafizrug ];
-    platforms = platforms.linux;
+    platforms = lib.platforms.linux;
   };
-}
+})
+
+
